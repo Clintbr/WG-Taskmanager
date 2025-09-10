@@ -1,6 +1,7 @@
 # WG TaskManager - Aufgabenverwaltung für Wohngemeinschaften
 
-![WG TaskManager Preview]("assets/images/prjkt9.png")
+![WG TaskManager Preview]('assets/images/prjkt9.png')
+
 Eine moderne, benutzerfreundliche Webanwendung zur Verwaltung von Aufgaben in Wohngemeinschaften. Mit dem WG TaskManager können Mitbewohner Aufgaben erstellen, zuweisen, verfolgen und verwalten – alles an einem zentralen Ort.
 
 ## ✨ Funktionen
