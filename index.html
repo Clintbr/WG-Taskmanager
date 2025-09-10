@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WG TaskManager</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-home"></i>
+            <span>WG TaskManager</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-view="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" data-view="tasks">
+                <i class="fas fa-tasks"></i>
+                <span>Aufgaben</span>
+            </li>
+            <li class="nav-item" data-view="roommates">
+                <i class="fas fa-users"></i>
+                <span>Mitbewohner</span>
+            </li>
+            <li class="nav-item" data-view="settings">
+                <i class="fas fa-cog"></i>
+                <span>Einstellungen</span>
+            </li>
+        </ul>
+        <div class="nav-footer">
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=WG+Admin&background=8e0b76&color=fff" alt="Profil">
+                <span>Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hauptinhalt -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1 id="page-title">Dashboard</h1>
+            <button class="btn btn-primary" id="add-task-btn">
+                <i class="fas fa-plus"></i> Neue Aufgabe
+            </button>
+        </header>
+
+        <!-- Ansichten Container -->
+        <div class="view-container">
+            <!-- Dashboard View -->
+            <div class="view active" id="dashboard-view">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pending-tasks">0</h3>
+                            <p>Ausstehende Aufgaben</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="completed-tasks">0</h3>
+                            <p>Erledigte Aufgaben</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon roommates">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="roommates-count">0</h3>
+                            <p>Mitbewohner</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon overdue">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="overdue-tasks">0</h3>
+                            <p>Überfällige Aufgaben</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="card">
+                        <h2>Heute fällig</h2>
+                        <div id="today-tasks-container"></div>
+                    </div>
+                    <div class="card">
+                        <h2>Kommende Aufgaben</h2>
+                        <div id="upcoming-tasks-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aufgaben View -->
+            <div class="view" id="tasks-view">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="status-filter">Status:</label>
+                        <select id="status-filter">
+                            <option value="all">Alle</option>
+                            <option value="pending">Ausstehend</option>
+                            <option value="completed">Erledigt</option>
+                            <option value="overdue">Überfällig</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="assignee-filter">Zugewiesen an:</label>
+                        <select id="assignee-filter">
+                            <option value="all">Alle</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="category-filter">Kategorie:</label>
+                        <select id="category-filter">
+                            <option value="all">Alle</option>
+                            <option value="cleaning">Putzen</option>
+                            <option value="shopping">Einkaufen</option>
+                            <option value="cooking">Kochen</option>
+                            <option value="maintenance">Wartung</option>
+                            <option value="other">Sonstiges</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tasks-container" id="tasks-container"></div>
+            </div>
+
+            <!-- Mitbewohner View -->
+            <div class="view" id="roommates-view">
+                <div class="roommates-header">
+                    <h2>Mitbewohner verwalten</h2>
+                    <button class="btn btn-primary" id="add-roommate-btn">
+                        <i class="fas fa-user-plus"></i> Mitbewohner hinzufügen
+                    </button>
+                </div>
+                <div class="roommates-grid" id="roommates-container"></div>
+            </div>
+
+            <!-- Einstellungen View -->
+            <div class="view" id="settings-view">
+                <div class="card">
+                    <h2>Allgemeine Einstellungen</h2>
+                    <div class="settings-group">
+                        <label for="notifications">Benachrichtigungen:</label>
+                        <input type="checkbox" id="notifications" checked>
+                    </div>
+                    <div class="settings-group">
+                        <label for="reminder-time">Erinnerungszeit:</label>
+                        <select id="reminder-time">
+                            <option value="1">1 Tag vorher</option>
+                            <option value="2">2 Tage vorher</option>
+                            <option value="3">3 Tage vorher</option>
+                            <option value="7">1 Woche vorher</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="save-settings">Einstellungen speichern</button>
+                </div>
+
+                <div class="card">
+                    <h2>Datenverwaltung</h2>
+                    <div class="data-actions">
+                        <button class="btn btn-secondary" id="export-data">Daten exportieren</button>
+                        <button class="btn btn-danger" id="reset-data">Daten zurücksetzen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="task-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="task-modal-title">Neue Aufgabe</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <form id="task-form">
+            <div class="form-group">
+                <label for="task-title">Titel *</label>
+                <input type="text" id="task-title" required>
+            </div>
+            <div class="form-group">
+                <label for="task-description">Beschreibung</label>
+                <textarea id="task-description" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="task-category">Kategorie *</label>
+                    <select id="task-category" required>
+                        <option value="cleaning">Putzen</option>
+                        <option value="shopping">Einkaufen</option>
+                        <option value="cooking">Kochen</option>
+                        <option value="maintenance">Wartung</option>
+                        <option value="other">Sonstiges</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-priority">Priorität *</label>
+                    <select id="task-priority" required>
+                        <option value="low">Niedrig</option>
+                        <option value="medium">Mittel</option>
+                        <option value="high">Hoch</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="task-assignee">Zugewiesen an *</label>
+                    <select id="task-assignee" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="task-due-date">Fällig am *</label>
+                    <input type="date" id="task-due-date" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-task">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="roommate-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="roommate-modal-title">Mitbewohner hinzufügen</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <form id="roommate-form">
+            <div class="form-group">
+                <label for="roommate-name">Name *</label>
+                <input type="text" id="roommate-name" required>
+            </div>
+            <div class="form-group">
+                <label for="roommate-email">E-Mail</label>
+                <input type="email" id="roommate-email">
+            </div>
+            <div class="form-group">
+                <label for="roommate-phone">Telefon</label>
+                <input type="tel" id="roommate-phone">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-roommate">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="confirm-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="confirm-modal-title">Bestätigung</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirm-message">Sind Sie sicher?</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" id="confirm-cancel">Abbrechen</button>
+            <button class="btn btn-danger" id="confirm-ok">Bestätigen</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/app.js"></script>
+</body>
+</html>
